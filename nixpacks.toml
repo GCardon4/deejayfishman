@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = ["npm install --legacy-peer-deps"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "node .output/server/index.mjs"
+
+[variables]
+NODE_ENV = "production"
+NITRO_HOST = "0.0.0.0"
+NITRO_PORT = "3000"
+NIXPACKS_NODE_VERSION = "20"
+NPM_CONFIG_LEGACY_PEER_DEPS = "true"
