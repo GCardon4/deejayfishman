@@ -11,8 +11,21 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  runtimeConfig: {
+    supabaseKey: process.env.SUPABASE_KEY,
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseKey: process.env.SUPABASE_KEY
+    }
+  },
+
+  colorMode: {
+    preference: 'dark',
+    fallback: 'dark'
+  },
+
   routeRules: {
-    '/': { prerender: true }
+    '/admin/**': { ssr: false }
   },
 
   compatibilityDate: '2025-01-15',

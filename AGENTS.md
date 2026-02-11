@@ -47,7 +47,7 @@ Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura 
 
 ##  Stack Tecnológico
 
-- **Frontend**: Nuxt 3
+- **Frontend**: Nuxt 3 - Dark Mode
 - **Rendering**: SSR
 - **Backend**: Supabase (Auth, PostgreSQL, Storage)
 - **Estado**: Pinia

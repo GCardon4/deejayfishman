@@ -7,72 +7,121 @@ useHead({
     { rel: 'icon', href: '/favicon.ico' }
   ],
   htmlAttrs: {
-    lang: 'en'
+    lang: 'es'
   }
 })
 
-const title = 'Nuxt Starter Template'
-const description = 'A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.'
+const title = 'DJ Fishman | Crossover DJ'
+const description = 'DJ Fishman - Crossover DJ. Eventos, música y noticias. Contrataciones y booking.'
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
-  twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/starter-light.png',
   twitterCard: 'summary_large_image'
 })
+
+const route = useRoute()
+
+// Verificar si la ruta actual es del panel admin
+const isAdminRoute = computed(() => route.path.startsWith('/admin'))
+
+const navLinks = [
+  { label: 'Inicio', to: '/' },
+  { label: 'Eventos', to: '/#eventos' },
+  { label: 'Noticias', to: '/#noticias' }
+]
+
+const socialLinks = [
+  { icon: 'i-simple-icons-instagram', to: '#', label: 'Instagram' },
+  { icon: 'i-simple-icons-soundcloud', to: '#', label: 'SoundCloud' },
+  { icon: 'i-simple-icons-youtube', to: '#', label: 'YouTube' }
+]
 </script>
 
 <template>
   <UApp>
-    <UHeader>
-      <template #left>
-        <NuxtLink to="/">
-          <AppLogo class="w-auto h-6 shrink-0" />
-        </NuxtLink>
+    <!-- Sitio publico -->
+    <template v-if="!isAdminRoute">
+      <UHeader>
+        <template #left>
+          <NuxtLink to="/">
+            <AppLogo />
+          </NuxtLink>
+        </template>
 
-        <TemplateMenu />
-      </template>
+        <template #center>
+          <nav class="hidden md:flex items-center gap-6">
+            <NuxtLink
+              v-for="link in navLinks"
+              :key="link.label"
+              :to="link.to"
+              class="text-sm font-medium text-neutral-400 hover:text-primary transition-colors"
+            >
+              {{ link.label }}
+            </NuxtLink>
+          </nav>
+        </template>
 
-      <template #right>
-        <UColorModeButton />
+        <template #right>
+          <div class="flex items-center gap-2">
+            <UButton
+              v-for="social in socialLinks"
+              :key="social.label"
+              :to="social.to"
+              target="_blank"
+              :icon="social.icon"
+              :aria-label="social.label"
+              color="neutral"
+              variant="ghost"
+              size="sm"
+            />
+            <UColorModeButton />
+          </div>
+        </template>
+      </UHeader>
 
-        <UButton
-          to="https://github.com/nuxt-ui-templates/starter"
-          target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
-          color="neutral"
-          variant="ghost"
-        />
-      </template>
-    </UHeader>
+      <UMain>
+        <NuxtPage />
+      </UMain>
 
-    <UMain>
-      <NuxtPage />
-    </UMain>
+      <footer class="border-t border-neutral-800 bg-neutral-950/50">
+        <div class="max-w-7xl mx-auto px-4 py-10">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col items-center md:items-start gap-2">
+              <img src="/silver-logo.png" alt="DJ Fishman" class="h-10 w-auto">
+              <p class="text-sm text-neutral-500">
+                Crossover DJ
+              </p>
+            </div>
 
-    <USeparator icon="i-simple-icons-nuxtdotjs" />
+            <div class="flex items-center gap-3">
+              <UButton
+                v-for="social in socialLinks"
+                :key="social.label"
+                :to="social.to"
+                target="_blank"
+                :icon="social.icon"
+                :aria-label="social.label"
+                color="neutral"
+                variant="ghost"
+              />
+            </div>
 
-    <UFooter>
-      <template #left>
-        <p class="text-sm text-muted">
-          Built with Nuxt UI • © {{ new Date().getFullYear() }}
-        </p>
-      </template>
+            <p class="text-sm text-neutral-500">
+              &copy; {{ new Date().getFullYear() }} DJ Fishman. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </template>
 
-      <template #right>
-        <UButton
-          to="https://github.com/nuxt-ui-templates/starter"
-          target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
-          color="neutral"
-          variant="ghost"
-        />
-      </template>
-    </UFooter>
+    <!-- Panel admin -->
+    <template v-else>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </template>
   </UApp>
 </template>
