@@ -2,7 +2,7 @@ import type { User } from '@supabase/supabase-js'
 
 interface Profile {
   id: string
-  name: string
+  fullName: string
   email: string
   roleId: number
 }
@@ -20,32 +20,37 @@ export const useAuth = () => {
 
   // Obtener perfil del usuario desde la tabla profiles
   async function fetchProfile() {
-    const { data: { user: currentUser } } = await supabase.auth.getUser()
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser()
 
-    if (!currentUser) {
-      user.value = null
-      profile.value = null
-      return
-    }
+      if (!currentUser) {
+        user.value = null
+        profile.value = null
+        return
+      }
 
-    user.value = currentUser
+      user.value = currentUser
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, name, email, role_id')
-      .eq('id', currentUser.id)
-      .single()
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, role_id')
+        .eq('id', currentUser.id)
+        .single()
 
-    if (error) {
-      console.error('Error al obtener perfil:', error)
-      return
-    }
+      if (error) {
+        console.error('Error al obtener perfil:', error)
+        throw new Error(`Error al obtener perfil: ${error.message}`)
+      }
 
-    profile.value = {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      roleId: data.role_id
+      profile.value = {
+        id: data.id,
+        fullName: data.full_name,
+        email: data.email,
+        roleId: data.role_id
+      }
+    } catch (e: any) {
+      console.error('fetchProfile error:', e)
+      throw e
     }
   }
 

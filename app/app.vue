@@ -83,7 +83,9 @@ const socialLinks = [
       </UHeader>
 
       <UMain>
-        <NuxtPage />
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
       </UMain>
 
       <footer class="border-t border-neutral-800 bg-neutral-950/50">

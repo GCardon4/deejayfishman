@@ -55,7 +55,7 @@ function isActive(path: string) {
           </div>
           <div class="min-w-0">
             <p class="text-sm font-medium truncate">
-              {{ profile?.name || 'Admin' }}
+              {{ profile?.fullName || 'Admin' }}
             </p>
             <p class="text-xs text-neutral-500 truncate">
               {{ profile?.email }}

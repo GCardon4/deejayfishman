@@ -11,9 +11,14 @@ const state = reactive({
 
 // Verificar si ya esta autenticado al cargar
 onMounted(async () => {
-  await fetchProfile()
-  if (isAdmin.value) {
-    navigateTo('/admin')
+  try {
+    await fetchProfile()
+    if (isAdmin.value) {
+      navigateTo('/admin')
+    }
+  } catch (e) {
+    // No hay sesion activa, mostrar formulario
+    console.log('Sin sesion activa')
   }
 })
 
@@ -29,9 +34,14 @@ async function onSubmit() {
       error.value = 'No tienes permisos de administrador'
     }
   } catch (e: any) {
-    error.value = e.message === 'Invalid login credentials'
-      ? 'Email o contrasena incorrectos'
-      : e.message || 'Error al iniciar sesion'
+    console.error('Login error:', e)
+    if (e.message === 'Invalid login credentials') {
+      error.value = 'Email o contrasena incorrectos'
+    } else if (e.message?.includes('perfil')) {
+      error.value = 'Error al obtener perfil de usuario. Verifica la configuracion de la base de datos.'
+    } else {
+      error.value = e.message || 'Error al iniciar sesion'
+    }
   }
 }
 </script>
