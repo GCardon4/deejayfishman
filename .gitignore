@@ -23,6 +23,9 @@
 #ideas
 /ideas
 
+#Logs Deploys Error
+/logs
+
 # misc
 .DS_Store
 *.pem
