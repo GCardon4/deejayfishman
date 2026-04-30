@@ -6,8 +6,6 @@ Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura 
 -   Cada función nueva debe incluir una línea de comentario encima en Español.
 -   Todas las variables y funciones deben escribirse en camelCase
 -   No uses snake_case
--   Trabajar todas las acciones y getters con stores, en la carpeta store
--   Folder /stores, se cargan los nuevos stores creados
 
 ## Características Implementadas
 - Publicaciones de Eventos para compartir por WhastApp y redes sociales
@@ -34,7 +32,7 @@ Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura 
 
 ### Funcionalidades Especificas
 
-- **Usuario Admin (role_id: 1)**
+- **Usuario Admin**
 	-- Crea y edita de Eventos con el CRUD completo
 	-- Crea y edita de Noticias con el CRUD completo
 
@@ -47,9 +45,8 @@ Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura 
 
 ##  Stack Tecnológico
 
-- **Frontend**: Nuxt 3 - Dark Mode
+- **Frontend**: Next.js - Dark Mode
 - **Rendering**: SSR
 - **Backend**: Supabase (Auth, PostgreSQL, Storage)
-- **Estado**: Pinia
 - **Base de Datos Local**: IndexedDB
 - **PWA**: Workbox (configurado)
