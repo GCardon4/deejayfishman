@@ -1,4 +1,19 @@
 import Image from "next/image";
+import {
+  MdArrowForward,
+  MdLocationOn,
+  MdPlayArrow,
+  MdSkipPrevious,
+  MdSkipNext,
+  MdVolumeUp,
+  MdChatBubble,
+  MdPhotoCamera,
+  MdMusicNote,
+  MdGroups,
+  MdMusicVideo,
+  MdLanguage,
+} from "react-icons/md";
+import type { IconType } from "react-icons";
 
 type Sponsor = {
   name: string;
@@ -15,12 +30,41 @@ type Sponsor = {
   };
 };
 
+type ContactCard = {
+  Icon: IconType;
+  label: string;
+  value: string;
+  href: string;
+};
+
 export default function Home() {
+  const contactCards: ContactCard[] = [
+    {
+      Icon: MdChatBubble,
+      label: "WhatsApp",
+      value: "+57 301 649 4664",
+      href: "https://wa.me/573016494664",
+    },
+    {
+      Icon: MdPhotoCamera,
+      label: "Instagram",
+      value: "@yosoyfishman",
+      href: "https://www.instagram.com/yosoyfishman/",
+    },
+    {
+      Icon: MdMusicNote,
+      label: "SoundCloud",
+      value: "deejay-fishman-1",
+      href: "https://soundcloud.com/deejay-fishman-1",
+    },
+  ];
+
   const sponsors: Sponsor[] = [
     {
       name: "Sponsor Uno",
       category: "Bar & Entretenimiento",
-      description: "Descripción breve del negocio o persona. Aquí va la información de presentación.",
+      description:
+        "Descripción breve del negocio o persona. Aquí va la información de presentación.",
       image: null,
       initials: "S1",
       contacts: {
@@ -34,7 +78,8 @@ export default function Home() {
     {
       name: "Sponsor Dos",
       category: "Fotografía & Video",
-      description: "Descripción breve del negocio o persona. Aquí va la información de presentación.",
+      description:
+        "Descripción breve del negocio o persona. Aquí va la información de presentación.",
       image: null,
       initials: "S2",
       contacts: {
@@ -48,7 +93,8 @@ export default function Home() {
     {
       name: "Sponsor Tres",
       category: "Moda & Lifestyle",
-      description: "Descripción breve del negocio o persona. Aquí va la información de presentación.",
+      description:
+        "Descripción breve del negocio o persona. Aquí va la información de presentación.",
       image: null,
       initials: "S3",
       contacts: {
@@ -86,6 +132,7 @@ export default function Home() {
             { href: "#tarifas", label: "Tarifas" },
             { href: "#streaming", label: "Streaming" },
             { href: "#contacto", label: "Contacto" },
+            { href: "#sponsors", label: "Sponsors" },
           ].map(({ href, label }) => (
             <a
               key={href}
@@ -134,7 +181,7 @@ export default function Home() {
                 de la Noche.
               </h1>
 
-              <p className="font-sans text-body-lg text-on-surface-variant">
+              <p className="font-sans text-body-lg text-on-surface-variant ">
                 Con años de experiencia en el Valle de Aburrá, DJ Fishman fusiona
                 Urbano, Tropical, Electrónico y Clásicos para crear experiencias
                 únicas en festivales masivos, eventos corporativos y los mejores
@@ -172,7 +219,6 @@ export default function Home() {
                     priority
                   />
                 </div>
-                {/* Acentos de esquina */}
                 <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-secondary" />
                 <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-secondary" />
                 <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-secondary" />
@@ -198,9 +244,7 @@ export default function Home() {
               className="font-sans text-label-caps tracking-widest uppercase text-secondary flex items-center gap-unit hover:text-secondary-fixed transition-colors"
             >
               Ver Todos
-              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>
-                arrow_forward
-              </span>
+              <MdArrowForward size={16} />
             </a>
           </div>
 
@@ -218,9 +262,7 @@ export default function Home() {
                     Festival Urbano Medellín
                   </h3>
                   <p className="font-sans text-body-md text-on-surface-variant flex items-center gap-sm">
-                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
-                      location_on
-                    </span>
+                    <MdLocationOn size={18} />
                     Medellín · Plaza Mayor
                   </p>
                 </div>
@@ -287,12 +329,7 @@ export default function Home() {
                     className="absolute inset-0 bg-surface/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm"
                   >
                     <div className="w-16 h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-[0_0_20px_rgba(233,195,73,0.5)]">
-                      <span
-                        className="material-symbols-outlined"
-                        style={{ fontVariationSettings: "'FILL' 1", fontSize: "32px" }}
-                      >
-                        play_arrow
-                      </span>
+                      <MdPlayArrow size={32} />
                     </div>
                   </a>
                 </div>
@@ -325,9 +362,7 @@ export default function Home() {
                   {/* Controles */}
                   <div className="flex items-center justify-start gap-md">
                     <button className="text-on-surface-variant hover:text-secondary transition-colors">
-                      <span className="material-symbols-outlined" style={{ fontSize: "28px" }}>
-                        skip_previous
-                      </span>
+                      <MdSkipPrevious size={28} />
                     </button>
                     <a
                       href="https://soundcloud.com/deejay-fishman-1"
@@ -335,19 +370,13 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="w-12 h-12 rounded-full border border-secondary text-secondary flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-all shadow-[0_0_15px_rgba(233,195,73,0.2)]"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "32px" }}>
-                        play_arrow
-                      </span>
+                      <MdPlayArrow size={32} />
                     </a>
                     <button className="text-on-surface-variant hover:text-secondary transition-colors">
-                      <span className="material-symbols-outlined" style={{ fontSize: "28px" }}>
-                        skip_next
-                      </span>
+                      <MdSkipNext size={28} />
                     </button>
                     <div className="ml-auto flex items-center gap-unit text-on-surface-variant">
-                      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-                        volume_up
-                      </span>
+                      <MdVolumeUp size={20} />
                       <div className="w-24 h-[2px] bg-surface-variant rounded-full">
                         <div className="w-2/3 h-full bg-secondary rounded-full" />
                       </div>
@@ -372,26 +401,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            {[
-              {
-                icon: "chat_bubble",
-                label: "WhatsApp",
-                value: "+57 301 649 4664",
-                href: "https://wa.me/573016494664",
-              },
-              {
-                icon: "photo_camera",
-                label: "Instagram",
-                value: "@yosoyfishman",
-                href: "https://www.instagram.com/yosoyfishman/",
-              },
-              {
-                icon: "music_note",
-                label: "SoundCloud",
-                value: "deejay-fishman-1",
-                href: "https://soundcloud.com/deejay-fishman-1",
-              },
-            ].map(({ icon, label, value, href }) => (
+            {contactCards.map(({ Icon, label, value, href }) => (
               <a
                 key={label}
                 href={href}
@@ -399,9 +409,10 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col gap-sm hover:border-secondary/50 transition-colors group"
               >
-                <span className="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform">
-                  {icon}
-                </span>
+                <Icon
+                  size={24}
+                  className="text-secondary group-hover:scale-110 transition-transform"
+                />
                 <p className="font-sans text-label-caps tracking-widest uppercase text-outline">
                   {label}
                 </p>
@@ -476,9 +487,7 @@ export default function Home() {
                       className="text-outline hover:text-secondary transition-colors"
                       aria-label="WhatsApp"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-                        chat_bubble
-                      </span>
+                      <MdChatBubble size={20} />
                     </a>
                   )}
                   {sponsor.contacts.instagram && (
@@ -489,9 +498,7 @@ export default function Home() {
                       className="text-outline hover:text-secondary transition-colors"
                       aria-label="Instagram"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-                        photo_camera
-                      </span>
+                      <MdPhotoCamera size={20} />
                     </a>
                   )}
                   {sponsor.contacts.facebook && (
@@ -502,9 +509,7 @@ export default function Home() {
                       className="text-outline hover:text-secondary transition-colors"
                       aria-label="Facebook"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-                        groups
-                      </span>
+                      <MdGroups size={20} />
                     </a>
                   )}
                   {sponsor.contacts.tiktok && (
@@ -515,9 +520,7 @@ export default function Home() {
                       className="text-outline hover:text-secondary transition-colors"
                       aria-label="TikTok"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-                        music_video
-                      </span>
+                      <MdMusicVideo size={20} />
                     </a>
                   )}
                   {sponsor.contacts.website && (
@@ -528,9 +531,7 @@ export default function Home() {
                       className="text-outline hover:text-secondary transition-colors"
                       aria-label="Sitio web"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize: "20px" }}>
-                        language
-                      </span>
+                      <MdLanguage size={20} />
                     </a>
                   )}
                 </div>
@@ -580,7 +581,7 @@ export default function Home() {
             className="text-outline hover:text-secondary transition-colors"
             aria-label="SoundCloud"
           >
-            <span className="material-symbols-outlined">music_note</span>
+            <MdMusicNote size={24} />
           </a>
           <a
             href="https://www.instagram.com/yosoyfishman/"
@@ -589,7 +590,7 @@ export default function Home() {
             className="text-outline hover:text-secondary transition-colors"
             aria-label="Instagram"
           >
-            <span className="material-symbols-outlined">photo_camera</span>
+            <MdPhotoCamera size={24} />
           </a>
           <a
             href="https://wa.me/573016494664"
@@ -598,7 +599,7 @@ export default function Home() {
             className="text-outline hover:text-secondary transition-colors"
             aria-label="WhatsApp"
           >
-            <span className="material-symbols-outlined">chat_bubble</span>
+            <MdChatBubble size={24} />
           </a>
         </div>
 
