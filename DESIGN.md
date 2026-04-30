@@ -19,7 +19,7 @@ colors:
   primary: '#c9c6c5'
   on-primary: '#313030'
   primary-container: '#0a0a0a'
-  on-primary-container: '#7b7979'
+  on-primary-container: '#7b797936'
   inverse-primary: '#5f5e5e'
   secondary: '#e9c349'
   on-secondary: '#3c2f00'
