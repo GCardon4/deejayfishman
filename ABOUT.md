@@ -47,3 +47,9 @@ Su nombre es una constante en las agendas culturales y festivas de los municipio
 1. **Personalización:** Si tienes un número exacto de años de carrera (ej. 12 años), sustituye "varios años" por la cifra específica para generar más autoridad.
 2. **Hitos Locales:** Si has tocado en eventos específicos como la Feria de las Flores, las Fiestas del Carriel o las Fiestas de la Piedra, menciónalos por nombre propio.
 3. **Multimedia:** Acompaña estos textos con fotos de alta calidad donde se te vea en acción con público detrás.
+
+
+### Redes Sociales y Contacto
+- **SoundCloud** https://soundcloud.com/deejay-fishman-1
+- **Instagram** https://www.instagram.com/yosoyfishman/
+- **WhatsApp** +573016494664

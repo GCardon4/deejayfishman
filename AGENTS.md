@@ -1,5 +1,5 @@
 #Descripción del Proyecto
-Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura y amplia experiencia, en el sitio encontraremos eventos y noticias que pueden compartir por todos los medios y redes sociales
+Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura y amplia experiencia, en el sitio encontraremos eventos y pautas que pueden compartir por todos los medios y redes sociales
 
 
 #Agents Rules
