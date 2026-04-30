@@ -28,6 +28,7 @@ Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura 
 - **Autenticación y gestión de usuarios** 
 - **Gestión de Noticias** con CRUD completo solo admin
 - **Gestión de Eventos** con CRUD completo solo admin
+- **Gestión de Pautas** con CRUD completo solo admin
 
 
 ### Funcionalidades Especificas
