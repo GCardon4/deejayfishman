@@ -6,6 +6,7 @@ Pagina Web con el Perfil de Deejay Fishman, un DJ Crosover con grande cobertura 
 -   Cada función nueva debe incluir una línea de comentario encima en Español.
 -   Todas las variables y funciones deben escribirse en camelCase
 -   No uses snake_case
+-	Todos los datos e información están en la carpeta /docs
 
 ## Características Implementadas
 - Publicaciones de Eventos para compartir por WhastApp y redes sociales
