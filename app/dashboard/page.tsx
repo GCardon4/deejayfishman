@@ -7,7 +7,7 @@ async function getStats() {
   const [eventos, vistas, sponsors] = await Promise.all([
     supabase.from("events").select("*", { count: "exact", head: true }),
     supabase.from("event_views").select("*", { count: "exact", head: true }),
-    supabase.from("sponsors").select("*", { count: "exact", head: true }),
+    supabase.from("sponsor").select("*", { count: "exact", head: true }),
   ]);
 
   return {

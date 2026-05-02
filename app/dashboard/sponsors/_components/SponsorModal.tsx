@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { createClient } from "@/utils/supabase/client";
-import { MdClose, MdWarning, MdPeople } from "react-icons/md";
+import { MdClose, MdWarning, MdPeople, MdUpload, MdImage } from "react-icons/md";
 import type { Sponsor } from "./SponsorsClient";
 
 interface Props {
@@ -17,11 +17,52 @@ type FormData = {
   description: string;
   phone: string;
   address: string;
-  img_url: string;
   instagram: string;
   facebook: string;
   status: boolean;
 };
+
+const MAX_MB = 5;
+
+// Convierte un archivo de imagen a WebP comprimiendo iterativamente hasta MAX_MB
+async function convertirAWebp(archivo: File): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(archivo);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("No canvas context"));
+      ctx.drawImage(img, 0, 0);
+
+      let calidad = 0.9;
+      const intentar = () => {
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) return reject(new Error("Conversión fallida"));
+            if (blob.size > MAX_MB * 1024 * 1024 && calidad > 0.1) {
+              calidad = Math.max(+(calidad - 0.1).toFixed(1), 0.1);
+              intentar();
+            } else {
+              resolve(blob);
+            }
+          },
+          "image/webp",
+          calidad
+        );
+      };
+      intentar();
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Error cargando imagen"));
+    };
+    img.src = objectUrl;
+  });
+}
 
 export default function SponsorModal({ sponsor, onClose, onSaved }: Props) {
   const [form, setForm] = useState<FormData>({
@@ -29,16 +70,49 @@ export default function SponsorModal({ sponsor, onClose, onSaved }: Props) {
     description: sponsor?.description ?? "",
     phone: sponsor?.phone?.toString() ?? "",
     address: sponsor?.address ?? "",
-    img_url: sponsor?.img_url ?? "",
     instagram: sponsor?.instagram ?? "",
     facebook: sponsor?.facebook ?? "",
     status: sponsor?.status ?? true,
   });
+  const [imgUrl, setImgUrl] = useState<string | null>(sponsor?.img_url ?? null);
+  const [imagenArchivo, setImagenArchivo] = useState<File | null>(null);
+  const [imagenPreview, setImagenPreview] = useState<string | null>(sponsor?.img_url ?? null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const set = (field: keyof FormData, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [field]: value }));
+
+  const handleImagenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const archivo = e.target.files?.[0];
+    if (!archivo) return;
+    if (!archivo.type.startsWith("image/")) {
+      setError("Solo se permiten archivos de imagen.");
+      return;
+    }
+    setError(null);
+    setImagenArchivo(archivo);
+    // Liberar URL anterior si era un objectURL
+    if (imagenPreview && imagenPreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagenPreview);
+    }
+    setImagenPreview(URL.createObjectURL(archivo));
+  };
+
+  const subirImagen = async (sponsorId: number): Promise<string> => {
+    if (!imagenArchivo) throw new Error("Sin archivo");
+    const supabase = createClient();
+    const blob = await convertirAWebp(imagenArchivo);
+    const ruta = `${sponsorId}/logo.webp`;
+    const { error: uploadError } = await supabase.storage
+      .from("sponsor")
+      .upload(ruta, blob, { contentType: "image/webp", upsert: true });
+    if (uploadError) throw new Error(`Storage: ${uploadError.message}`);
+    const { data } = supabase.storage.from("sponsor").getPublicUrl(ruta);
+    // Cache-buster para que el navegador refresque la imagen tras cada subida
+    return `${data.publicUrl}?t=${Date.now()}`;
+  };
 
   const handleSubmit = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
@@ -49,28 +123,58 @@ export default function SponsorModal({ sponsor, onClose, onSaved }: Props) {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const payload = {
-      name: form.name.trim(),
-      description: form.description.trim() || null,
-      phone: form.phone.trim() ? Number(form.phone.replace(/\D/g, "")) : null,
-      address: form.address.trim() || null,
-      img_url: form.img_url.trim() || null,
-      instagram: form.instagram.trim() || null,
-      facebook: form.facebook.trim() || null,
-      status: form.status,
-    };
+    try {
+      const supabase = createClient();
+      const payloadBase = {
+        name: form.name.trim(),
+        description: form.description.trim() || null,
+        phone: form.phone.trim() ? Number(form.phone.replace(/\D/g, "")) : null,
+        address: form.address.trim() || null,
+        instagram: form.instagram.trim() || null,
+        facebook: form.facebook.trim() || null,
+        status: form.status,
+      };
 
-    const result = sponsor
-      ? await supabase.from("sponsors").update(payload).eq("id", sponsor.id)
-      : await supabase.from("sponsors").insert([payload]);
+      if (sponsor) {
+        // Editar: subir imagen primero si hay una nueva
+        let nuevaImgUrl = imgUrl;
+        if (imagenArchivo) {
+          nuevaImgUrl = await subirImagen(sponsor.id);
+          setImgUrl(nuevaImgUrl);
+        }
+        const { error: updateError } = await supabase
+          .from("sponsor")
+          .update({ ...payloadBase, img_url: nuevaImgUrl })
+          .eq("id", sponsor.id);
+        if (updateError) throw new Error(`DB update: ${updateError.message}`);
+      } else {
+        // Crear: insertar primero para obtener el ID, luego subir imagen
+        const { data: insertado, error: insertError } = await supabase
+          .from("sponsor")
+          .insert([{ ...payloadBase, img_url: null }])
+          .select("id")
+          .single();
+        if (insertError) throw new Error(`DB insert: ${insertError.message}`);
+        if (!insertado) throw new Error("Insert no retornó ID");
 
-    setLoading(false);
-    if (result.error) {
-      setError("Error al guardar. Intenta de nuevo.");
-      return;
+        if (imagenArchivo) {
+          const nuevaImgUrl = await subirImagen(insertado.id);
+          const { error: updateImgError } = await supabase
+            .from("sponsor")
+            .update({ img_url: nuevaImgUrl })
+            .eq("id", insertado.id);
+          if (updateImgError) throw new Error(`DB update img: ${updateImgError.message}`);
+        }
+      }
+
+      onSaved();
+    } catch (err) {
+      const mensaje = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("SponsorModal error:", mensaje);
+      setError(`Error al guardar: ${mensaje}`);
+    } finally {
+      setLoading(false);
     }
-    onSaved();
   };
 
   const modal = (
@@ -237,15 +341,84 @@ export default function SponsorModal({ sponsor, onClose, onSaved }: Props) {
             </Field>
           </div>
 
-          <Field label="URL de imagen" htmlFor="sp-img">
+          {/* Imagen del sponsor */}
+          <Field label="Imagen" htmlFor="sp-imagen">
             <input
-              id="sp-img"
-              type="url"
-              value={form.img_url}
-              onChange={(e) => set("img_url", e.target.value)}
-              placeholder="https://..."
-              style={inputStyle}
+              ref={inputFileRef}
+              id="sp-imagen"
+              type="file"
+              accept="image/*"
+              onChange={handleImagenChange}
+              style={{ display: "none" }}
             />
+
+            {imagenPreview ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                <div
+                  style={{
+                    borderRadius: "0.75rem",
+                    overflow: "hidden",
+                    border: "1px solid var(--color-outline-variant)",
+                    aspectRatio: "16/9",
+                    background: "var(--color-surface-container-high)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imagenPreview}
+                    alt="Preview"
+                    style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => inputFileRef.current?.click()}
+                  style={{
+                    ...inputStyle,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    cursor: "pointer",
+                    border: "1px dashed var(--color-outline-variant)",
+                    color: "var(--color-secondary)",
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  <MdUpload style={{ fontSize: "1rem" }} />
+                  Cambiar imagen
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => inputFileRef.current?.click()}
+                style={{
+                  ...inputStyle,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                  cursor: "pointer",
+                  border: "1px dashed var(--color-outline-variant)",
+                  padding: "1.5rem 1rem",
+                  color: "var(--color-on-surface-variant)",
+                }}
+              >
+                <MdImage style={{ fontSize: "1.75rem", color: "var(--color-secondary)" }} />
+                <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--color-on-surface)" }}>
+                  Seleccionar imagen
+                </span>
+                <span style={{ fontSize: "0.75rem" }}>
+                  Se convierte a WebP · máx. {MAX_MB} MB
+                </span>
+              </button>
+            )}
           </Field>
 
           {/* Toggle de estado */}

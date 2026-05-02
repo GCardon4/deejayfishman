@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { createClient } from "@/utils/supabase/server";
 import {
   MdArrowForward,
   MdLocationOn,
@@ -10,24 +11,18 @@ import {
   MdPhotoCamera,
   MdMusicNote,
   MdGroups,
-  MdMusicVideo,
-  MdLanguage,
 } from "react-icons/md";
 import type { IconType } from "react-icons";
 
 type Sponsor = {
+  id: number;
   name: string;
-  category: string;
-  description: string;
-  image: string | null;
-  initials: string;
-  contacts: {
-    whatsapp: string | null;
-    instagram: string | null;
-    facebook: string | null;
-    tiktok: string | null;
-    website: string | null;
-  };
+  description: string | null;
+  img_url: string | null;
+  phone: number | null;
+  instagram: string | null;
+  facebook: string | null;
+  address: string | null;
 };
 
 type ContactCard = {
@@ -37,7 +32,14 @@ type ContactCard = {
   href: string;
 };
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: sponsors } = await supabase
+    .from("sponsor")
+    .select("id, name, description, img_url, phone, instagram, facebook, address")
+    .eq("status", true)
+    .order("name");
+
   const contactCards: ContactCard[] = [
     {
       Icon: MdChatBubble,
@@ -59,53 +61,6 @@ export default function Home() {
     },
   ];
 
-  const sponsors: Sponsor[] = [
-    {
-      name: "Sponsor Uno",
-      category: "Bar & Entretenimiento",
-      description:
-        "Descripción breve del negocio o persona. Aquí va la información de presentación.",
-      image: null,
-      initials: "S1",
-      contacts: {
-        whatsapp: "573000000001",
-        instagram: "https://instagram.com/sponsor1",
-        facebook: null,
-        tiktok: null,
-        website: null,
-      },
-    },
-    {
-      name: "Sponsor Dos",
-      category: "Fotografía & Video",
-      description:
-        "Descripción breve del negocio o persona. Aquí va la información de presentación.",
-      image: null,
-      initials: "S2",
-      contacts: {
-        whatsapp: "573000000002",
-        instagram: "https://instagram.com/sponsor2",
-        facebook: "https://facebook.com/sponsor2",
-        tiktok: null,
-        website: null,
-      },
-    },
-    {
-      name: "Sponsor Tres",
-      category: "Moda & Lifestyle",
-      description:
-        "Descripción breve del negocio o persona. Aquí va la información de presentación.",
-      image: null,
-      initials: "S3",
-      contacts: {
-        whatsapp: null,
-        instagram: "https://instagram.com/sponsor3",
-        facebook: null,
-        tiktok: "https://tiktok.com/@sponsor3",
-        website: "https://sponsor3.com",
-      },
-    },
-  ];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -440,103 +395,106 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-            {sponsors.map((sponsor) => (
-              <div
-                key={sponsor.name}
-                className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col items-center text-center gap-sm hover:border-secondary/50 transition-colors group"
-              >
-                {/* Avatar */}
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-secondary/30 group-hover:border-secondary/70 transition-colors relative flex-shrink-0 mt-sm">
-                  {sponsor.image ? (
-                    <Image
-                      src={sponsor.image}
-                      alt={sponsor.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-container-lowest flex items-center justify-center">
-                      <span className="font-display text-xl font-bold text-secondary/60 select-none">
-                        {sponsor.initials}
-                      </span>
+            {(sponsors as Sponsor[] ?? []).map((sponsor) => {
+              const initials = sponsor.name
+                .split(" ")
+                .slice(0, 2)
+                .map((w) => w[0])
+                .join("")
+                .toUpperCase();
+              const igUrl = sponsor.instagram
+                ? sponsor.instagram.startsWith("http")
+                  ? sponsor.instagram
+                  : `https://instagram.com/${sponsor.instagram.replace("@", "")}`
+                : null;
+              const fbUrl = sponsor.facebook
+                ? sponsor.facebook.startsWith("http")
+                  ? sponsor.facebook
+                  : `https://facebook.com/${sponsor.facebook.replace("@", "")}`
+                : null;
+
+              return (
+                <div
+                  key={sponsor.id}
+                  className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col items-center text-center gap-sm hover:border-secondary/50 transition-colors group"
+                >
+                  {/* Avatar */}
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-secondary/30 group-hover:border-secondary/70 transition-colors relative flex-shrink-0 mt-sm">
+                    {sponsor.img_url ? (
+                      <Image
+                        src={sponsor.img_url}
+                        alt={sponsor.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-container-lowest flex items-center justify-center">
+                        <span className="font-display text-xl font-bold text-secondary/60 select-none">
+                          {initials}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex flex-col items-center gap-unit">
+                    <h3 className="font-display text-xl text-on-surface leading-tight">
+                      {sponsor.name}
+                    </h3>
+                    {sponsor.address && (
+                      <p className="font-sans text-[11px] tracking-widest uppercase text-secondary">
+                        {sponsor.address}
+                      </p>
+                    )}
+                  </div>
+
+                  {sponsor.description && (
+                    <p className="font-sans text-body-md text-on-surface-variant leading-relaxed flex-grow">
+                      {sponsor.description}
+                    </p>
+                  )}
+
+                  {/* Contactos */}
+                  {(sponsor.phone || igUrl || fbUrl) && (
+                    <div className="flex items-center gap-md pt-sm border-t border-outline-variant/20 w-full justify-center">
+                      {sponsor.phone && (
+                        <a
+                          href={`https://wa.me/${sponsor.phone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-outline hover:text-secondary transition-colors"
+                          aria-label="WhatsApp"
+                        >
+                          <MdChatBubble size={20} />
+                        </a>
+                      )}
+                      {igUrl && (
+                        <a
+                          href={igUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-outline hover:text-secondary transition-colors"
+                          aria-label="Instagram"
+                        >
+                          <MdPhotoCamera size={20} />
+                        </a>
+                      )}
+                      {fbUrl && (
+                        <a
+                          href={fbUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-outline hover:text-secondary transition-colors"
+                          aria-label="Facebook"
+                        >
+                          <MdGroups size={20} />
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>
-
-                {/* Info */}
-                <div className="flex flex-col items-center gap-unit">
-                  <h3 className="font-display text-xl text-on-surface leading-tight">
-                    {sponsor.name}
-                  </h3>
-                  <p className="font-sans text-[11px] tracking-widest uppercase text-secondary">
-                    {sponsor.category}
-                  </p>
-                </div>
-
-                <p className="font-sans text-body-md text-on-surface-variant leading-relaxed flex-grow">
-                  {sponsor.description}
-                </p>
-
-                {/* Contactos */}
-                <div className="flex items-center gap-md pt-sm border-t border-outline-variant/20 w-full justify-center">
-                  {sponsor.contacts.whatsapp && (
-                    <a
-                      href={`https://wa.me/${sponsor.contacts.whatsapp}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-outline hover:text-secondary transition-colors"
-                      aria-label="WhatsApp"
-                    >
-                      <MdChatBubble size={20} />
-                    </a>
-                  )}
-                  {sponsor.contacts.instagram && (
-                    <a
-                      href={sponsor.contacts.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-outline hover:text-secondary transition-colors"
-                      aria-label="Instagram"
-                    >
-                      <MdPhotoCamera size={20} />
-                    </a>
-                  )}
-                  {sponsor.contacts.facebook && (
-                    <a
-                      href={sponsor.contacts.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-outline hover:text-secondary transition-colors"
-                      aria-label="Facebook"
-                    >
-                      <MdGroups size={20} />
-                    </a>
-                  )}
-                  {sponsor.contacts.tiktok && (
-                    <a
-                      href={sponsor.contacts.tiktok}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-outline hover:text-secondary transition-colors"
-                      aria-label="TikTok"
-                    >
-                      <MdMusicVideo size={20} />
-                    </a>
-                  )}
-                  {sponsor.contacts.website && (
-                    <a
-                      href={sponsor.contacts.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-outline hover:text-secondary transition-colors"
-                      aria-label="Sitio web"
-                    >
-                      <MdLanguage size={20} />
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       </main>

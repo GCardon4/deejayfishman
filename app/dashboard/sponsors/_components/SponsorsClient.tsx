@@ -60,7 +60,7 @@ export default function SponsorsClient({ sponsors }: Props) {
   const handleDelete = async (id: number) => {
     setDeleteLoading(true);
     const supabase = createClient();
-    await supabase.from("sponsors").delete().eq("id", id);
+    await supabase.from("sponsor").delete().eq("id", id);
     setDeletingId(null);
     setDeleteLoading(false);
     router.refresh();

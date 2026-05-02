@@ -5,7 +5,7 @@ import type { Sponsor } from "./_components/SponsorsClient";
 async function getSponsors(): Promise<Sponsor[]> {
   const supabase = await createClient();
   const { data } = await supabase
-    .from("sponsors")
+    .from("sponsor")
     .select("*")
     .order("name");
   return (data ?? []) as Sponsor[];
