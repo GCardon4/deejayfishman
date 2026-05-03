@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
+import { SocialIcon } from "@/components/SocialIcon";
 import {
   MdArrowForward,
   MdLocationOn,
@@ -7,12 +8,8 @@ import {
   MdSkipPrevious,
   MdSkipNext,
   MdVolumeUp,
-  MdChatBubble,
-  MdPhotoCamera,
   MdMusicNote,
-  MdGroups,
 } from "react-icons/md";
-import type { IconType } from "react-icons";
 
 type Sponsor = {
   id: number;
@@ -26,7 +23,7 @@ type Sponsor = {
 };
 
 type ContactCard = {
-  Icon: IconType;
+  icon: React.ReactNode;
   label: string;
   value: string;
   href: string;
@@ -42,19 +39,19 @@ export default async function Home() {
 
   const contactCards: ContactCard[] = [
     {
-      Icon: MdChatBubble,
+      icon: <SocialIcon name="whatsapp" size={24} />,
       label: "WhatsApp",
       value: "+57 301 649 4664",
       href: "https://wa.me/573016494664",
     },
     {
-      Icon: MdPhotoCamera,
+      icon: <SocialIcon name="instagram" size={24} />,
       label: "Instagram",
       value: "@yosoyfishman",
       href: "https://www.instagram.com/yosoyfishman/",
     },
     {
-      Icon: MdMusicNote,
+      icon: <MdMusicNote size={24} />,
       label: "SoundCloud",
       value: "deejay-fishman-1",
       href: "https://soundcloud.com/deejay-fishman-1",
@@ -356,7 +353,7 @@ export default async function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            {contactCards.map(({ Icon, label, value, href }) => (
+            {contactCards.map(({ icon, label, value, href }) => (
               <a
                 key={label}
                 href={href}
@@ -364,10 +361,9 @@ export default async function Home() {
                 rel="noopener noreferrer"
                 className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col gap-sm hover:border-secondary/50 transition-colors group"
               >
-                <Icon
-                  size={24}
-                  className="text-secondary group-hover:scale-110 transition-transform"
-                />
+                <span className="text-secondary group-hover:scale-110 transition-transform inline-flex">
+                  {icon}
+                </span>
                 <p className="font-sans text-label-caps tracking-widest uppercase text-outline">
                   {label}
                 </p>
@@ -459,13 +455,13 @@ export default async function Home() {
                     <div className="flex items-center gap-md pt-sm border-t border-outline-variant/20 w-full justify-center">
                       {sponsor.phone && (
                         <a
-                          href={`https://wa.me/${sponsor.phone}`}
+                          href={`https://wa.me/${sponsor.phone}?text=${encodeURIComponent("Hola, *DJ Fishman* me recomendó tus muy buenos servicios, me puede dar más información, Muchas Gracias")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-outline hover:text-secondary transition-colors"
                           aria-label="WhatsApp"
                         >
-                          <MdChatBubble size={20} />
+                          <SocialIcon name="whatsapp" size={20} />
                         </a>
                       )}
                       {igUrl && (
@@ -476,7 +472,7 @@ export default async function Home() {
                           className="text-outline hover:text-secondary transition-colors"
                           aria-label="Instagram"
                         >
-                          <MdPhotoCamera size={20} />
+                          <SocialIcon name="instagram" size={20} />
                         </a>
                       )}
                       {fbUrl && (
@@ -487,7 +483,7 @@ export default async function Home() {
                           className="text-outline hover:text-secondary transition-colors"
                           aria-label="Facebook"
                         >
-                          <MdGroups size={20} />
+                          <SocialIcon name="facebook" size={20} />
                         </a>
                       )}
                     </div>
@@ -548,7 +544,7 @@ export default async function Home() {
             className="text-outline hover:text-secondary transition-colors"
             aria-label="Instagram"
           >
-            <MdPhotoCamera size={24} />
+            <SocialIcon name="instagram" size={24} />
           </a>
           <a
             href="https://wa.me/573016494664"
@@ -557,7 +553,7 @@ export default async function Home() {
             className="text-outline hover:text-secondary transition-colors"
             aria-label="WhatsApp"
           >
-            <MdChatBubble size={24} />
+            <SocialIcon name="whatsapp" size={24} />
           </a>
         </div>
 
