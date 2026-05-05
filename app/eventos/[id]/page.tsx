@@ -44,22 +44,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     evento.description ??
     `Evento con DJ Fishman${evento.address ? ` en ${evento.address}` : ""}`;
 
+  // Strip cache-busting query param so WhatsApp/OG scrapers can fetch the image
+  const ogImage = evento.firstImage?.split("?")[0] ?? null;
+
   return {
     title,
     description,
     openGraph: {
       title,
       description,
-      images: evento.firstImage
-        ? [{ url: evento.firstImage, width: 1200, height: 630, alt: evento.name }]
-        : [],
+      images: ogImage ? [{ url: ogImage, alt: evento.name }] : [],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: evento.firstImage ? [evento.firstImage] : [],
+      images: ogImage ? [ogImage] : [],
     },
   };
 }
@@ -92,10 +93,10 @@ export default async function EventoPage({ params }: Props) {
           }}
         >
           {evento.firstImage && (
-            <div className="relative h-60 w-full">
+            <div className="relative h-72 w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={evento.firstImage}
+                src={evento.firstImage.split("?")[0]}
                 alt={evento.name}
                 className="w-full h-full object-cover"
               />

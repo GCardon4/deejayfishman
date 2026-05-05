@@ -247,29 +247,27 @@ export default async function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-surface-container-high via-surface-container to-surface-container-lowest" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/50 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-md w-full flex justify-between items-end gap-md">
-                  <div className="flex-1 min-w-0">
-                    <span className="inline-block px-sm py-unit border border-secondary text-secondary font-sans text-label-caps tracking-widest uppercase rounded-full mb-sm bg-surface/50 backdrop-blur-md">
-                      Principal
-                    </span>
-                    <h3 className="font-display text-headline-md text-on-surface mb-unit">
-                      {mainEvento.name}
-                    </h3>
-                    {mainEvento.address && (
-                      <p className="font-sans text-body-md text-secondary text-on-surface-variant flex items-center gap-sm">
-                        <MdLocationOn size={18} />
-                        {mainEvento.address}
-                      </p>
-                    )}
-                    {mainEvento.description && (
-                      <p className="font-sans text-body-sm text-on-surface-variant mt-unit opacity-90">
-                        {mainEvento.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-end gap-sm shrink-0">
+                <div className="absolute bottom-0 left-0 p-4 md:p-md w-full">
+                  <span className="inline-block px-sm py-unit border border-secondary text-secondary font-sans text-label-caps tracking-widest uppercase rounded-full mb-sm bg-surface/50 backdrop-blur-md">
+                    Principal
+                  </span>
+                  <h3 className="font-display text-xl md:text-headline-md text-on-surface mb-unit leading-tight">
+                    {mainEvento.name}
+                  </h3>
+                  {mainEvento.address && (
+                    <p className="font-sans text-sm text-secondary flex items-center gap-1">
+                      <MdLocationOn size={15} />
+                      {mainEvento.address}
+                    </p>
+                  )}
+                  {mainEvento.description && (
+                    <p className="hidden sm:block font-sans text-xs text-on-surface-variant mt-unit line-clamp-2 max-w-md opacity-90">
+                      {mainEvento.description}
+                    </p>
+                  )}
+                  <div className="flex items-center justify-between mt-3 gap-2">
                     {mainEvento.date_event && (
-                      <p className="font-display text-headline-md text-secondary">
+                      <p className="font-display text-xl md:text-headline-md text-secondary">
                         {formatFechaEvento(mainEvento.date_event)}
                       </p>
                     )}
@@ -277,7 +275,7 @@ export default async function Home() {
                       href={buildEventWaUrl(mainEvento, siteUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-black/60 backdrop-blur-sm text-secondary border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all"
+                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-black/60 backdrop-blur-sm text-secondary border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all ml-auto"
                     >
                       <SocialIcon name="whatsapp" size={14} />
                       Compartir
