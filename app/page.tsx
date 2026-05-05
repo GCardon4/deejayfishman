@@ -39,6 +39,16 @@ function formatFechaEvento(dateStr: string): string {
   return `${mes} ${d.getDate()}`;
 }
 
+function buildEventWaUrl(ev: EventoDestacado): string {
+  const lines: string[] = [`🎵 *${ev.name}*`, ""];
+  if (ev.address) lines.push(`📍 ${ev.address}`);
+  if (ev.date_event) lines.push(`📅 ${formatFechaEvento(ev.date_event)}`);
+  if (ev.description) lines.push("", ev.description);
+  if (ev.firstImage) lines.push("", ev.firstImage);
+  lines.push("", "🎧 _via DJ Fishman_");
+  return `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
 export default async function Home() {
   const supabase = await createClient();
   const [
@@ -275,13 +285,22 @@ export default async function Home() {
                       </p>
                     )}
                   </div>
-                  {mainEvento.date_event && (
-                    <div className="text-right shrink-0">
+                  <div className="flex flex-col items-end gap-sm shrink-0">
+                    {mainEvento.date_event && (
                       <p className="font-display text-headline-md text-secondary">
                         {formatFechaEvento(mainEvento.date_event)}
                       </p>
-                    </div>
-                  )}
+                    )}
+                    <a
+                      href={buildEventWaUrl(mainEvento)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-black/60 backdrop-blur-sm text-secondary border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all"
+                    >
+                      <SocialIcon name="whatsapp" size={14} />
+                      Compartir
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -305,25 +324,37 @@ export default async function Home() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/70 to-transparent" />
                       <div className="absolute bottom-0 left-0 p-md w-full">
-                        <h4 className="font-display text-2xl text-on-surface">
-                          {ev.name}
-                        </h4>
-                        {ev.address && (
-                          <p className="font-sans text-body-sm text-secondary text-on-surface-variant flex items-center gap-1 mt-unit">
-                            <MdLocationOn size={14} />
-                            {ev.address}
-                          </p>
-                        )}
-                        {ev.description && (
-                          <p className="font-sans text-body-sm text-on-surface-variant mt-unit line-clamp-1 opacity-80">
-                            {ev.description}
-                          </p>
-                        )}
-                        {ev.date_event && (
-                          <p className="font-sans text-label-caps tracking-widest uppercase text-secondary mt-sm">
-                            {formatFechaEvento(ev.date_event)}
-                          </p>
-                        )}
+                        <div className="flex justify-between items-end gap-2">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-display text-2xl text-on-surface">
+                              {ev.name}
+                            </h4>
+                            {ev.address && (
+                              <p className="font-sans text-body-sm text-secondary text-on-surface-variant flex items-center gap-1 mt-unit">
+                                <MdLocationOn size={14} />
+                                {ev.address}
+                              </p>
+                            )}
+                            {ev.description && (
+                              <p className="font-sans text-body-sm text-on-surface-variant mt-unit line-clamp-1 opacity-80">
+                                {ev.description}
+                              </p>
+                            )}
+                            {ev.date_event && (
+                              <p className="font-sans text-label-caps tracking-widest uppercase text-secondary mt-sm">
+                                {formatFechaEvento(ev.date_event)}
+                              </p>
+                            )}
+                          </div>
+                          <a
+                            href={buildEventWaUrl(ev)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm text-secondary border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all"
+                          >
+                            <SocialIcon name="whatsapp" size={18} />
+                          </a>
+                        </div>
                       </div>
                     </div>
                   ))}
