@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { SocialIcon } from "@/components/SocialIcon";
 import SponsorsSection, { type Sponsor } from "@/app/_components/SponsorsSection";
@@ -39,14 +40,8 @@ function formatFechaEvento(dateStr: string): string {
   return `${mes} ${d.getDate()}`;
 }
 
-function buildEventWaUrl(ev: EventoDestacado): string {
-  const lines: string[] = [`🎵 *${ev.name}*`, ""];
-  if (ev.address) lines.push(`📍 ${ev.address}`);
-  if (ev.date_event) lines.push(`📅 ${formatFechaEvento(ev.date_event)}`);
-  if (ev.description) lines.push("", ev.description);
-  if (ev.firstImage) lines.push("", ev.firstImage);
-  lines.push("", "🎧 _via DJ Fishman_");
-  return `https://wa.me/?text=${encodeURIComponent(lines.join("\n"))}`;
+function buildEventWaUrl(ev: EventoDestacado, siteUrl: string): string {
+  return `https://wa.me/?text=${encodeURIComponent(`${siteUrl}/eventos/${ev.id}`)}`;
 }
 
 export default async function Home() {
@@ -84,6 +79,11 @@ export default async function Home() {
 
   const mainEvento = eventos[0] ?? null;
   const secondaryEventos = eventos.slice(1);
+
+  const host = (await headers()).get("host") ?? "localhost:3000";
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (host.includes("localhost") ? `http://${host}` : `https://${host}`);
 
   const contactCards: ContactCard[] = [
     {
@@ -292,7 +292,7 @@ export default async function Home() {
                       </p>
                     )}
                     <a
-                      href={buildEventWaUrl(mainEvento)}
+                      href={buildEventWaUrl(mainEvento, siteUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold bg-black/60 backdrop-blur-sm text-secondary border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all"
@@ -347,7 +347,7 @@ export default async function Home() {
                             )}
                           </div>
                           <a
-                            href={buildEventWaUrl(ev)}
+                            href={buildEventWaUrl(ev, siteUrl)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full bg-black/60 backdrop-blur-sm text-secondary border border-secondary/30 hover:bg-secondary hover:text-on-secondary transition-all"
