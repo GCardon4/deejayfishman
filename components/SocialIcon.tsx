@@ -10,6 +10,7 @@ interface Props {
   name: SocialIconName;
   size?: number;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const PATHS: Record<SocialIconName, React.ReactNode> = {
@@ -47,7 +48,7 @@ const PATHS: Record<SocialIconName, React.ReactNode> = {
   ),
 };
 
-export function SocialIcon({ name, size = 20, className }: Props) {
+export function SocialIcon({ name, size = 20, className, style }: Props) {
   return (
     <svg
       viewBox="0 0 350 350"
@@ -56,6 +57,7 @@ export function SocialIcon({ name, size = 20, className }: Props) {
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={style}
       aria-hidden="true"
     >
       {PATHS[name]}

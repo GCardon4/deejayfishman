@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { SocialIcon } from "@/components/SocialIcon";
+import SponsorsSection, { type Sponsor } from "@/app/_components/SponsorsSection";
 import {
   MdArrowForward,
   MdLocationOn,
@@ -10,17 +11,6 @@ import {
   MdVolumeUp,
   MdMusicNote,
 } from "react-icons/md";
-
-type Sponsor = {
-  id: number;
-  name: string;
-  description: string | null;
-  img_url: string | null;
-  phone: number | null;
-  instagram: string | null;
-  facebook: string | null;
-  address: string | null;
-};
 
 type ContactCard = {
   icon: React.ReactNode;
@@ -390,108 +380,7 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
-            {(sponsors as Sponsor[] ?? []).map((sponsor) => {
-              const initials = sponsor.name
-                .split(" ")
-                .slice(0, 2)
-                .map((w) => w[0])
-                .join("")
-                .toUpperCase();
-              const igUrl = sponsor.instagram
-                ? sponsor.instagram.startsWith("http")
-                  ? sponsor.instagram
-                  : `https://instagram.com/${sponsor.instagram.replace("@", "")}`
-                : null;
-              const fbUrl = sponsor.facebook
-                ? sponsor.facebook.startsWith("http")
-                  ? sponsor.facebook
-                  : `https://facebook.com/${sponsor.facebook.replace("@", "")}`
-                : null;
-
-              return (
-                <div
-                  key={sponsor.id}
-                  className="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col items-center text-center gap-sm hover:border-secondary/50 transition-colors group"
-                >
-                  {/* Avatar */}
-                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-secondary/30 group-hover:border-secondary/70 transition-colors relative flex-shrink-0 mt-sm">
-                    {sponsor.img_url ? (
-                      <Image
-                        src={sponsor.img_url}
-                        alt={sponsor.name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-surface-container-high to-surface-container-lowest flex items-center justify-center">
-                        <span className="font-display text-xl font-bold text-secondary/60 select-none">
-                          {initials}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex flex-col items-center gap-unit">
-                    <h3 className="font-display text-xl text-on-surface leading-tight">
-                      {sponsor.name}
-                    </h3>
-                    {sponsor.address && (
-                      <p className="font-sans text-[11px] tracking-widest uppercase text-secondary">
-                        {sponsor.address}
-                      </p>
-                    )}
-                  </div>
-
-                  {sponsor.description && (
-                    <p className="font-sans text-body-md text-on-surface-variant leading-relaxed flex-grow">
-                      {sponsor.description}
-                    </p>
-                  )}
-
-                  {/* Contactos */}
-                  {(sponsor.phone || igUrl || fbUrl) && (
-                    <div className="flex items-center gap-md pt-sm border-t border-outline-variant/20 w-full justify-center">
-                      {sponsor.phone && (
-                        <a
-                          href={`https://wa.me/${sponsor.phone}?text=${encodeURIComponent("Hola, *DJ Fishman* me recomendó tus muy buenos servicios, me puede dar más información, Muchas Gracias")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-outline hover:text-secondary transition-colors"
-                          aria-label="WhatsApp"
-                        >
-                          <SocialIcon name="whatsapp" size={20} />
-                        </a>
-                      )}
-                      {igUrl && (
-                        <a
-                          href={igUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-outline hover:text-secondary transition-colors"
-                          aria-label="Instagram"
-                        >
-                          <SocialIcon name="instagram" size={20} />
-                        </a>
-                      )}
-                      {fbUrl && (
-                        <a
-                          href={fbUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-outline hover:text-secondary transition-colors"
-                          aria-label="Facebook"
-                        >
-                          <SocialIcon name="facebook" size={20} />
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <SponsorsSection sponsors={(sponsors as Sponsor[]) ?? []} />
         </section>
       </main>
 
