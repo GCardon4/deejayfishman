@@ -111,7 +111,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* NavBar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin py-sm bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 shadow-[0_0_15px_rgba(233,195,73,0.08)]">
+      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-margin py-sm bg-background/60 backdrop-blur-xl border-b border-outline-variant/20 shadow-[0_0_15px_rgba(233,195,73,0.08)]">
         <Image
           src="/white-logo.png"
           alt="DJ Fishman"
@@ -160,7 +160,7 @@ export default async function Home() {
         {/* === Hero === */}
         <section
           id="experiencia"
-          className="relative px-margin py-xl max-w-[1440px] mx-auto overflow-hidden"
+          className="relative px-4 md:px-margin py-lg md:py-xl max-w-[1440px] mx-auto overflow-hidden"
         >
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(175,141,17,0.15)_0%,transparent_60%)] -z-10" />
 
@@ -172,7 +172,7 @@ export default async function Home() {
                 El Crossover Maestro
               </span>
 
-              <h1 className="font-display text-headline-xl text-on-surface leading-[1.1] tracking-tight">
+              <h1 className="font-display text-[2.25rem] sm:text-headline-xl text-on-surface leading-[1.1] tracking-tight">
                 Dominando el <br />
                 <span className="text-secondary drop-shadow-[0_0_15px_rgba(233,195,73,0.3)]">
                   Ritmo Dorado
@@ -181,7 +181,7 @@ export default async function Home() {
                 de la Noche.
               </h1>
 
-              <p className="font-sans text-body-lg text-on-surface-variant ">
+              <p className="font-sans text-base sm:text-body-lg text-on-surface-variant">
                 Mas de 20 años de experiencia en la escena como DJ crossover. Hacen que DJ Fishman sea muy versatil a la hora de tocar, fusionando generos como el  Urbano, Tropical y Electrónico. Además Clásicos de los 80s  y 90s que le permiten crear  experiencias únicas en festivales masivos, eventos corporativos y los mejores clubes de Antioquia.
               </p>
 
@@ -214,10 +214,10 @@ export default async function Home() {
         {/* === Eventos === */}
         <section
           id="eventos"
-          className="px-margin py-lg max-w-[1440px] mx-auto"
+          className="px-4 md:px-margin py-lg max-w-[1440px] mx-auto"
         >
           <div className="flex justify-between items-end mb-lg border-b border-outline-variant/30 pb-sm">
-            <h2 className="font-display text-headline-lg text-on-surface">
+            <h2 className="font-display text-2xl sm:text-headline-lg text-on-surface">
               Próximos{" "}
               <span className="text-secondary italic">Eventos</span>
             </h2>
@@ -353,7 +353,7 @@ export default async function Home() {
         {/* === Streaming === */}
         <section
           id="streaming"
-          className="px-margin py-xl max-w-[1440px] mx-auto"
+          className="px-4 md:px-margin py-lg md:py-xl max-w-[1440px] mx-auto"
         >
           <div className="bg-surface-container-highest/40 backdrop-blur-xl border border-outline-variant/40 rounded-xl p-lg relative overflow-hidden">
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] -z-10 translate-x-1/3 -translate-y-1/3" />
@@ -387,7 +387,7 @@ export default async function Home() {
                 <span className="font-sans text-label-caps tracking-[0.2em] uppercase text-outline mb-sm">
                   Escuchando Ahora
                 </span>
-                <h2 className="font-display text-headline-lg text-on-surface mb-unit">
+                <h2 className="font-display text-2xl sm:text-headline-lg text-on-surface mb-unit">
                   Crossover Mix Vol. 3
                 </h2>
                 <p className="font-sans text-body-lg text-secondary mb-md">
@@ -438,10 +438,10 @@ export default async function Home() {
         {/* === Contacto === */}
         <section
           id="contacto"
-          className="px-margin py-lg max-w-[1440px] mx-auto"
+          className="px-4 md:px-margin py-lg max-w-[1440px] mx-auto"
         >
           <div className="flex justify-between items-end mb-lg border-b border-outline-variant/30 pb-sm">
-            <h2 className="font-display text-headline-lg text-on-surface">
+            <h2 className="font-display text-2xl sm:text-headline-lg text-on-surface">
               Hablemos de tu{" "}
               <span className="text-secondary italic">Evento</span>
             </h2>
@@ -471,11 +471,11 @@ export default async function Home() {
         {/* === Sponsors === */}
         <section
           id="sponsors"
-          className="px-margin py-lg max-w-[1440px] mx-auto"
+          className="px-4 md:px-margin py-lg max-w-[1440px] mx-auto"
         >
           <div className="flex justify-between items-end mb-lg border-b border-outline-variant/30 pb-sm">
             <div>
-              <h2 className="font-display text-headline-lg text-on-surface">
+              <h2 className="font-display text-2xl sm:text-headline-lg text-on-surface">
                 Aliados &{" "}
                 <span className="text-secondary italic">Sponsors</span>
               </h2>
@@ -492,7 +492,7 @@ export default async function Home() {
       {/* Footer */}
       <footer
         id="tarifas"
-        className="w-full px-margin py-lg flex flex-col items-center gap-8 bg-surface-container-lowest border-t border-outline-variant/20"
+        className="w-full px-4 md:px-margin py-lg flex flex-col items-center gap-8 bg-surface-container-lowest border-t border-outline-variant/20"
       >
         <Image
           src="/white-logo.png"
