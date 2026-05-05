@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { SocialIcon } from "@/components/SocialIcon";
 import SponsorsSection, { type Sponsor } from "@/app/_components/SponsorsSection";
+import ProfileGallery from "@/app/_components/ProfileGallery";
 import {
   MdArrowForward,
   MdLocationOn,
@@ -129,7 +130,6 @@ export default async function Home() {
           </a>
           {[
             { href: "#eventos", label: "Eventos" },
-            { href: "#tarifas", label: "Tarifas" },
             { href: "#streaming", label: "Streaming" },
             { href: "#contacto", label: "Contacto" },
             { href: "#sponsors", label: "Sponsors" },
@@ -182,10 +182,7 @@ export default async function Home() {
               </h1>
 
               <p className="font-sans text-body-lg text-on-surface-variant ">
-                Con años de experiencia en el Valle de Aburrá, DJ Fishman fusiona
-                Urbano, Tropical, Electrónico y Clásicos para crear experiencias
-                únicas en festivales masivos, eventos corporativos y los mejores
-                clubes de Antioquia.
+                Mas de 20 años de experiencia en la escena como DJ crossover. Hacen que DJ Fishman sea muy versatil a la hora de tocar, fusionando generos como el  Urbano, Tropical y Electrónico. Además Clásicos de los 80s  y 90s que le permiten crear  experiencias únicas en festivales masivos, eventos corporativos y los mejores clubes de Antioquia.
               </p>
 
               <div className="flex flex-wrap items-center gap-sm mt-sm">
@@ -206,24 +203,9 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Imagen de perfil */}
+            {/* Galería de perfil */}
             <div className="col-span-1 md:col-span-5 relative mt-lg md:mt-0">
-              <div className="relative p-sm border border-secondary/40 rounded-xl shadow-[0_0_30px_rgba(233,195,73,0.15)] bg-surface-container-low/50 backdrop-blur-sm z-10">
-                <div className="aspect-[3/4] rounded-lg overflow-hidden bg-surface-container-high relative">
-                  <Image
-                    src="/profile-two.jpeg"
-                    alt="DJ Fishman"
-                    fill
-                    className="object-cover object-top grayscale hover:grayscale-0 transition-all duration-700 opacity-90 hover:opacity-100"
-                    sizes="(max-width: 768px) 100vw, 40vw"
-                    priority
-                  />
-                </div>
-                <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-secondary" />
-                <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-secondary" />
-                <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-secondary" />
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-secondary" />
-              </div>
+              <ProfileGallery />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[110%] border border-outline-variant/30 rounded-full -z-0 rotate-12" />
             </div>
           </div>
