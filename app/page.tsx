@@ -19,13 +19,61 @@ type ContactCard = {
   href: string;
 };
 
+type EventoDestacado = {
+  id: number;
+  name: string;
+  description: string | null;
+  address: string | null;
+  date_event: string | null;
+  display_order: number | null;
+  firstImage: string | null;
+};
+
+function formatFechaEvento(dateStr: string): string {
+  const d = new Date(dateStr.slice(0, 10) + "T12:00:00");
+  if (isNaN(d.getTime())) return "";
+  const mes = d
+    .toLocaleDateString("es-CO", { month: "short" })
+    .toUpperCase()
+    .replace(".", "");
+  return `${mes} ${d.getDate()}`;
+}
+
 export default async function Home() {
   const supabase = await createClient();
-  const { data: sponsors } = await supabase
-    .from("sponsor")
-    .select("id, name, description, img_url, phone, instagram, facebook, address")
-    .eq("status", true)
-    .order("name");
+  const [
+    { data: sponsors },
+    { data: eventsData },
+    { data: evImagesData },
+  ] = await Promise.all([
+    supabase
+      .from("sponsor")
+      .select("id, name, description, img_url, phone, instagram, facebook, address")
+      .eq("status", true)
+      .order("name"),
+    supabase
+      .from("events")
+      .select("id, name, description, address, date_event, display_order")
+      .not("display_order", "is", null)
+      .order("display_order")
+      .limit(3),
+    supabase.from("images_events").select("event_id, image_url"),
+  ]);
+
+  const firstImageMap = new Map<number, string>();
+  for (const img of evImagesData ?? []) {
+    if (!firstImageMap.has(img.event_id)) {
+      firstImageMap.set(img.event_id, img.image_url);
+    }
+  }
+
+  const eventos: EventoDestacado[] = (eventsData ?? []).map((ev) => ({
+    ...ev,
+    firstImage: firstImageMap.get(ev.id) ?? null,
+  }));
+
+  const mainEvento = eventos[0] ?? null;
+  const secondaryEventos = eventos.slice(1);
 
   const contactCards: ContactCard[] = [
     {
@@ -190,59 +238,105 @@ export default async function Home() {
             </a>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
-            {/* Evento principal */}
-            <div className="md:col-span-8 bg-surface-container relative rounded-xl overflow-hidden border border-outline-variant/50 group h-[400px]">
-              <div className="absolute inset-0 bg-gradient-to-br from-surface-container-high via-surface-container to-surface-container-lowest" />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-md w-full flex justify-between items-end">
-                <div>
-                  <span className="inline-block px-sm py-unit border border-secondary text-secondary font-sans text-label-caps tracking-widest uppercase rounded-full mb-sm bg-surface/50 backdrop-blur-md">
-                    Principal
-                  </span>
-                  <h3 className="font-display text-headline-md text-on-surface mb-unit">
-                    Festival Urbano Medellín
-                  </h3>
-                  <p className="font-sans text-body-md text-on-surface-variant flex items-center gap-sm">
-                    <MdLocationOn size={18} />
-                    Medellín · Plaza Mayor
-                  </p>
+          {mainEvento ? (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+              {/* Evento principal */}
+              <div
+                className={`${secondaryEventos.length > 0 ? "md:col-span-8" : "md:col-span-12"} relative rounded-xl overflow-hidden border border-outline-variant/50 group h-[400px]`}
+              >
+                {mainEvento.firstImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={mainEvento.firstImage}
+                    alt={mainEvento.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-surface-container-high via-surface-container to-surface-container-lowest" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/50 to-transparent" />
+                <div className="absolute bottom-0 left-0 p-md w-full flex justify-between items-end gap-md">
+                  <div className="flex-1 min-w-0">
+                    <span className="inline-block px-sm py-unit border border-secondary text-secondary font-sans text-label-caps tracking-widest uppercase rounded-full mb-sm bg-surface/50 backdrop-blur-md">
+                      Principal
+                    </span>
+                    <h3 className="font-display text-headline-md text-on-surface mb-unit">
+                      {mainEvento.name}
+                    </h3>
+                    {mainEvento.address && (
+                      <p className="font-sans text-body-md text-on-surface-variant flex items-center gap-sm">
+                        <MdLocationOn size={18} />
+                        {mainEvento.address}
+                      </p>
+                    )}
+                    {mainEvento.description && (
+                      <p className="font-sans text-body-sm text-on-surface-variant mt-unit line-clamp-2 max-w-md opacity-90">
+                        {mainEvento.description}
+                      </p>
+                    )}
+                  </div>
+                  {mainEvento.date_event && (
+                    <div className="text-right shrink-0">
+                      <p className="font-display text-headline-md text-secondary">
+                        {formatFechaEvento(mainEvento.date_event)}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div className="text-right">
-                  <p className="font-display text-headline-md text-secondary">
-                    NOV 12
-                  </p>
+              </div>
+
+              {/* Eventos secundarios */}
+              {secondaryEventos.length > 0 && (
+                <div className="md:col-span-4 flex flex-col gap-gutter">
+                  {secondaryEventos.map((ev) => (
+                    <div
+                      key={ev.id}
+                      className="flex-1 relative rounded-xl overflow-hidden border border-outline-variant/30 group min-h-[185px] hover:border-secondary/50 transition-colors"
+                    >
+                      {ev.firstImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={ev.firstImage}
+                          alt={ev.name}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-surface-container-low" />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/70 to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-md w-full">
+                        <h4 className="font-display text-2xl text-on-surface">
+                          {ev.name}
+                        </h4>
+                        {ev.address && (
+                          <p className="font-sans text-body-sm text-on-surface-variant flex items-center gap-1 mt-unit">
+                            <MdLocationOn size={14} />
+                            {ev.address}
+                          </p>
+                        )}
+                        {ev.description && (
+                          <p className="font-sans text-body-sm text-on-surface-variant mt-unit line-clamp-1 opacity-80">
+                            {ev.description}
+                          </p>
+                        )}
+                        {ev.date_event && (
+                          <p className="font-sans text-label-caps tracking-widest uppercase text-secondary mt-sm">
+                            {formatFechaEvento(ev.date_event)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              )}
             </div>
-
-            {/* Eventos secundarios */}
-            <div className="md:col-span-4 flex flex-col gap-gutter">
-              <div className="flex-1 bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col justify-center hover:border-secondary/50 transition-colors">
-                <p className="font-sans text-label-caps tracking-widest uppercase text-secondary mb-unit">
-                  Residencia
-                </p>
-                <h4 className="font-display text-2xl text-on-surface">
-                  Club Noche Dorada
-                </h4>
-                <p className="font-sans text-body-md text-on-surface-variant mt-auto pt-sm">
-                  Envigado · NOV 18
-                </p>
-              </div>
-
-              <div className="flex-1 bg-surface-container-low border border-outline-variant/30 rounded-xl p-md flex flex-col justify-center hover:border-secondary/50 transition-colors">
-                <p className="font-sans text-label-caps tracking-widest uppercase text-secondary mb-unit">
-                  Corporativo
-                </p>
-                <h4 className="font-display text-2xl text-on-surface">
-                  Gala Empresarial
-                </h4>
-                <p className="font-sans text-body-md text-on-surface-variant mt-auto pt-sm">
-                  Itagüí · DIC 02
-                </p>
-              </div>
+          ) : (
+            <div className="rounded-xl border border-outline-variant/30 p-lg flex items-center justify-center bg-surface-container-low">
+              <p className="font-sans text-body-md text-on-surface-variant">
+                Próximos eventos muy pronto.
+              </p>
             </div>
-          </div>
+          )}
         </section>
 
         {/* === Streaming === */}
