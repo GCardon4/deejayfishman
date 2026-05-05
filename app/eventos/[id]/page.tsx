@@ -115,7 +115,7 @@ export default async function EventoPage({ params }: Props) {
       </div>
 
       {/* Contenido */}
-      <div className="px-4 sm:px-6 pb-16 max-w-lg mx-auto" style={{ marginTop: "-2rem" }}>
+      <div className="px-4" style={{ marginTop: "-2rem"}}>
 
         {/* Badge DJ Fishman */}
         <span

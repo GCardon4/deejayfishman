@@ -261,7 +261,7 @@ export default async function Home() {
                     </p>
                   )}
                   {mainEvento.description && (
-                    <p className="hidden sm:block font-sans text-xs text-on-surface-variant mt-unit line-clamp-2 max-w-md opacity-90">
+                    <p className="hidden sm:block font-sans text-xs text-on-surface-variant mt-unit line-clamp-2 opacity-90">
                       {mainEvento.description}
                     </p>
                   )}
