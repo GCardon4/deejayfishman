@@ -25,7 +25,9 @@ export type Evento = {
 };
 
 function formatFecha(dateStr: string) {
-  return new Date(dateStr + "T00:00:00").toLocaleDateString("es-CO", {
+  const d = new Date(dateStr.slice(0, 10) + "T12:00:00");
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("es-CO", {
     day: "numeric",
     month: "short",
     year: "numeric",

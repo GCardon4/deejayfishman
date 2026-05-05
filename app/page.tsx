@@ -264,13 +264,13 @@ export default async function Home() {
                       {mainEvento.name}
                     </h3>
                     {mainEvento.address && (
-                      <p className="font-sans text-body-md text-on-surface-variant flex items-center gap-sm">
+                      <p className="font-sans text-body-md text-secondary text-on-surface-variant flex items-center gap-sm">
                         <MdLocationOn size={18} />
                         {mainEvento.address}
                       </p>
                     )}
                     {mainEvento.description && (
-                      <p className="font-sans text-body-sm text-on-surface-variant mt-unit line-clamp-2 max-w-md opacity-90">
+                      <p className="font-sans text-body-sm text-on-surface-variant mt-unit opacity-90">
                         {mainEvento.description}
                       </p>
                     )}
@@ -309,7 +309,7 @@ export default async function Home() {
                           {ev.name}
                         </h4>
                         {ev.address && (
-                          <p className="font-sans text-body-sm text-on-surface-variant flex items-center gap-1 mt-unit">
+                          <p className="font-sans text-body-sm text-secondary text-on-surface-variant flex items-center gap-1 mt-unit">
                             <MdLocationOn size={14} />
                             {ev.address}
                           </p>
