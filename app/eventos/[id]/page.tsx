@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { MdLocationOn, MdArrowBack } from "react-icons/md";
@@ -74,14 +75,14 @@ export default async function EventoPage({ params }: Props) {
       style={{ background: "var(--color-background)" }}
     >
       <div className="w-full max-w-lg">
-        <a
+        <Link
           href="/#eventos"
           className="inline-flex items-center gap-2 text-sm mb-8 transition-colors"
           style={{ color: "var(--color-on-surface-variant)" }}
         >
           <MdArrowBack size={16} />
           Volver a eventos
-        </a>
+        </Link>
 
         <div
           className="rounded-2xl overflow-hidden"
